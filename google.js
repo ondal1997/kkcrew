@@ -106,7 +106,7 @@ async function 스냅샷히스토리시트업데이트(snapshot) {
   console.log(`\n➕ '${range}' 시트에 데이터 추가 중...`);
 
   const values = [
-    [new Date(), JSON.stringify(snapshot.사람들), JSON.stringify(snapshot.모임들), '0.0.1'],
+    [new Date(), JSON.stringify(snapshot.사람들), JSON.stringify(snapshot.모임들), '0.0.2'],
   ];
 
   const response = await sheets.spreadsheets.values.append({
@@ -247,6 +247,7 @@ async function 모임시트업데이트(snapshot) {
 
 const integrateSnapshotToGoogleSheet = async (snapshot) => {
   await 스냅샷히스토리시트업데이트(snapshot);
+  snapshot.모임들 = snapshot.모임들.sort((a, b) => a.모임시각 - b.모임시각).filter((모임) => 모임.참여자수 > 0);
   await 사람시트업데이트(snapshot);
   await 모임시트업데이트(snapshot);
 }

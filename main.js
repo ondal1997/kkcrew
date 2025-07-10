@@ -1,6 +1,5 @@
 import integrateSnapshotToGoogleSheet from "./google.js";
 import getSomoimSnapshot from "./somoim.js";
-import { gid } from "./somoim.credentials.json";
 
 // const snapshot = {
 //     모임들: [],
@@ -24,5 +23,5 @@ const 사람 = {
 }
 
 
-const snapshot = await getSomoimSnapshot(gid);
+const snapshot = await getSomoimSnapshot();
 await integrateSnapshotToGoogleSheet(snapshot);
