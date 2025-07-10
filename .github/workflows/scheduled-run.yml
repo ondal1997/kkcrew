@@ -32,6 +32,10 @@ jobs:
     - name: Create credentials.json from secrets
       run: |
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > google.credentials.json
+
+    - name: Create kakao.credentials.json from secrets
+      run: |
+        echo '${{ secrets.KAKAO_CREDENTIALS }}' > kakao.credentials.json
         
     - name: Run main script
       run: node main.js
