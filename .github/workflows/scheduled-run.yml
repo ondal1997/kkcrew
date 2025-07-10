@@ -2,8 +2,8 @@ name: Scheduled Somoim Data Collection
 
 on:
   schedule:
-    # 1분마다 실행 (UTC 기준)
-    - cron: '*/1 * * * *'
+    # 가능한 모든 시간에 실행 (UTC 기준)
+    - cron: '* * * * *'
   workflow_dispatch: # 수동 실행도 가능하도록
 
 jobs:
