@@ -245,9 +245,21 @@ async function 모임시트업데이트(snapshot) {
   await 모임목록덮어씌우기(모임들);
 }
 
+const now = new Date();
+
 const integrateSnapshotToGoogleSheet = async (snapshot) => {
   await 스냅샷히스토리시트업데이트(snapshot);
-  snapshot.모임들 = snapshot.모임들.sort((a, b) => a.모임시각 - b.모임시각).filter((모임) => 모임.참여자수 > 0);
+  snapshot.모임들 = snapshot.모임들.sort((a, b) => a.모임시각 - b.모임시각).filter((모임) => {
+    const a = new Date(모임.모임시각);
+    const b = new Date(now);
+    a.setHours(a.getHours() + 9);
+    b.setHours(b.getHours() + 9);
+
+    const aa = `${a.getUTCFullYear()}${a.getUTCMonth().toString().padStart(2, '0')}${a.getUTCDate().toString().padStart(2, '0')}2359`; // 1분 이상의 불일치가 발생하지 않을 것이라 믿고 23:59으로 설정
+    const bb = `${b.getUTCFullYear()}${b.getUTCMonth().toString().padStart(2, '0')}${b.getUTCDate().toString().padStart(2, '0')}${b.getUTCHours().toString().padStart(2, '0')}${b.getUTCMinutes().toString().padStart(2, '0')}`;
+
+    return aa > bb;
+  });
   await 사람시트업데이트(snapshot);
   await 모임시트업데이트(snapshot);
 }
