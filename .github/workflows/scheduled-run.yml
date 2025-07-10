@@ -1,0 +1,49 @@
+name: Scheduled Somoim Data Collection
+
+on:
+  schedule:
+    # 10분마다 실행 (UTC 기준)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # 수동 실행도 가능하도록
+
+jobs:
+  collect-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create config.js from secrets
+      run: |
+        cat > config.js << 'EOF'
+        export const SOMOIM_CONFIG = {
+          defaultSomoimId: '${{ secrets.SOMOIM_ID }}'
+        };
+        EOF
+        
+    - name: Create credentials.json from secrets
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+        
+    - name: Run main script
+      run: node main.js
+      
+    - name: Upload logs (optional)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: execution-logs
+        path: |
+          *.log
+          logs/
+        retention-days: 7 
