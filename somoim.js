@@ -43,7 +43,9 @@ function transformTime(somoimTime) {
 
         const dateObj = getDate(date);
 
-        return getKSTDate(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate(), hourWithAmpm, minute);
+        const kstDate = getKSTDate(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate(), hourWithAmpm, minute);
+        kstDate.setHours(kstDate.getHours() - 9);
+        return kstDate;
     } catch (e) {
         // 해가 바뀌는 케이스는 잘 모르겠따. ㅎㅎ;
         console.error("Error transforming time:", e);
