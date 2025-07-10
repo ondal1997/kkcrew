@@ -195,7 +195,7 @@ async function 모임목록덮어씌우기(모임들) {
 
   const values = 모임들.map((모임, index) => {
     return [
-      `=TEXT(VALUE(REGEXREPLACE(H${index + 2}, "[T|Z]", " ")), "yyyy년 m월 d일 am/pm h:mm")`,
+      `=TEXT(VALUE(REGEXREPLACE(H${index + 2}, "[T|Z]", " ") + 9/24), "yyyy년 m월 d일 am/pm h:mm")`,
       모임.이름,
       모임.식별자,
       모임.참여자식별자들.length > 0 ? `=TEXTJOIN(" ", TRUE, MAP(SPLIT(E${index + 2}, " "), LAMBDA(item, IFERROR(XLOOKUP(item, '사람'!B:B, '사람'!A:A), item))))` : '',
