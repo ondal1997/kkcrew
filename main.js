@@ -37,7 +37,6 @@ const 사람 = {
 
 try {
     const snapshot = await getSomoimSnapshot();
-    throw new Error('test');
     await integrateSnapshotToGoogleSheet(snapshot);
 } catch (e) {
     console.error(e);
