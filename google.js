@@ -175,15 +175,16 @@ async function 모임시트에서모임목록가져오기() {
 
   return response.data.values.slice(1).map((row) => {
     return {
-      이름: row[0],
-      식별자: row[1],
-      미사용: row[2],
-      참여자식별자들: row[3]?.split(' ') ?? [],
-      최대정원: row[4],
-      참여자수: row[5],
-      모임시각: row[6],
-      모임장소: row[7],
-      모임비용: row[8],
+      모임시각display함수: row[0],
+      이름: row[1],
+      식별자: row[2],
+      참여자display함수: row[3],
+      참여자식별자들: row[4]?.split(' ') ?? [],
+      최대정원: row[5],
+      참여자수: row[6],
+      모임시각: row[7],
+      모임장소: row[8],
+      모임비용: row[9],
     }
   });
 }
@@ -193,7 +194,18 @@ async function 모임목록덮어씌우기(모임들) {
   const range = '모임!A2'; // 2번째 행부터 시작
 
   const values = 모임들.map((모임, index) => {
-    return [모임.이름, 모임.식별자, 모임.참여자식별자들.length > 0 ? `=TEXTJOIN(" ", TRUE, MAP(SPLIT(D${index + 2}, " "), LAMBDA(item, IFERROR(XLOOKUP(item, '사람'!B:B, '사람'!A:A), item))))` : '', 모임.참여자식별자들.join(' '), 모임.최대정원, 모임.참여자수, 모임.모임시각, 모임.모임장소, 모임.모임비용];
+    return [
+      `=TEXT(VALUE(REGEXREPLACE(H${index + 2}, "[T|Z]", " ")), "yyyy년 m월 d일 am/pm h:mm")`,
+      모임.이름,
+      모임.식별자,
+      모임.참여자식별자들.length > 0 ? `=TEXTJOIN(" ", TRUE, MAP(SPLIT(E${index + 2}, " "), LAMBDA(item, IFERROR(XLOOKUP(item, '사람'!B:B, '사람'!A:A), item))))` : '',
+      모임.참여자식별자들.join(' '),
+      모임.최대정원,
+      모임.참여자수,
+      모임.모임시각,
+      모임.모임장소,
+      모임.모임비용,
+    ];
   });
 
   const response = await sheets.spreadsheets.values.update({
