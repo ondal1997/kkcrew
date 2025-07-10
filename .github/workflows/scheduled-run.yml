@@ -27,15 +27,11 @@ jobs:
       
     - name: Create config.js from secrets
       run: |
-        cat > config.js << 'EOF'
-        export const SOMOIM_CONFIG = {
-          defaultSomoimId: '${{ secrets.SOMOIM_ID }}'
-        };
-        EOF
+        echo '${{ secrets.SOMOIM_CREDENTIALS }}' > somoim.credentials.json
         
     - name: Create credentials.json from secrets
       run: |
-        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > google.credentials.json
         
     - name: Run main script
       run: node main.js

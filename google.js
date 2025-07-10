@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 
 // 인증 정보 설정
 const auth = new google.auth.GoogleAuth({
-  keyFile: 'credentials.json', // 다운로드한 서비스 계정 키 파일 경로
+  keyFile: 'google.credentials.json', // 다운로드한 서비스 계정 키 파일 경로
   scopes: ['https://www.googleapis.com/auth/spreadsheets'], // API 범위
 });
 
