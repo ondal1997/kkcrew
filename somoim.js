@@ -2,23 +2,28 @@ import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 
 const now = new Date();
+const kstUTCNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+
+const getKSTDate = (year, month, day, hour = 0, minute = 0) => {
+    return new Date(`${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00Z`);
+}
 
 function transformTime(somoimTime) {
     const getDate = (dateString) => {
         if (dateString === '내일') {
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0);
+            return getKSTDate(kstUTCNow.getUTCFullYear(), kstUTCNow.getUTCMonth(), kstUTCNow.getUTCDate() + 1, 0, 0);
         };
         if (dateString === '모레') {
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 0, 0);
+            return getKSTDate(kstUTCNow.getUTCFullYear(), kstUTCNow.getUTCMonth(), kstUTCNow.getUTCDate() + 2, 0, 0);
         };
         if (dateString === '오늘') {
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+            return getKSTDate(kstUTCNow.getUTCFullYear(), kstUTCNow.getUTCMonth(), kstUTCNow.getUTCDate(), 0, 0);
         };
 
         // 7/13(일)
         const [month, dayWithWeek] = dateString.split('/');
         const [day] = dayWithWeek.split('(');
-        return new Date(now.getFullYear(), month - 1, day, 0, 0);
+        return new Date(kstUTCNow.getUTCFullYear(), month - 1, day, 0, 0);
     }
 
     try {
@@ -38,7 +43,7 @@ function transformTime(somoimTime) {
 
         const dateObj = getDate(date);
 
-        return new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), hourWithAmpm, minute);
+        return getKSTDate(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate(), hourWithAmpm, minute);
     } catch (e) {
         // 해가 바뀌는 케이스는 잘 모르겠따. ㅎㅎ;
         console.error("Error transforming time:", e);
