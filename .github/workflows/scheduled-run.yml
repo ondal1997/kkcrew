@@ -3,7 +3,7 @@ name: Scheduled Somoim Data Collection
 on:
   schedule:
     # 5분마다 실행 (UTC 기준)
-    - cron: '*/5 * * * *'
+    - cron: '* * * * *'
   workflow_dispatch: # 수동 실행도 가능하도록
   push:
     branches: [ main ]

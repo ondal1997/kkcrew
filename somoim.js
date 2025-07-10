@@ -1,6 +1,50 @@
 import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 
+const now = new Date();
+
+function transformTime(somoimTime) {
+    const getDate = (dateString) => {
+        if (dateString === '내일') {
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0);
+        };
+        if (dateString === '모레') {
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 0, 0);
+        };
+        if (dateString === '오늘') {
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+        };
+
+        // 7/13(일)
+        const [month, dayWithWeek] = dateString.split('/');
+        const [day] = dayWithWeek.split('(');
+        return new Date(now.getFullYear(), month - 1, day, 0, 0);
+    }
+
+    try {
+        // 들어올수있는값은 아래와 같은 형식이다. (전부 코리안시간대다.)
+        // 이값들을 적절히 date로 변환하고 싶다.
+
+        // 내일 오후 7:00
+        // 모레 오후 7:00
+        // 오늘 오후 7:00
+        // 오늘 오전 7:00
+        // 오늘 오전 7:00
+        // 7/13(일) 오후 1:00
+
+        const [date, ampm, time] = somoimTime.split(' ');
+        const [hour, minute] = time.split(':');
+        const hourWithAmpm = ampm === '오후' ? parseInt(hour, 10) + 12 : parseInt(hour, 10);
+
+        const dateObj = getDate(date);
+
+        return new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), hourWithAmpm, minute);
+    } catch (e) {
+        // 해가 바뀌는 케이스는 잘 모르겠따. ㅎㅎ;
+        console.error("Error transforming time:", e);
+        return `${now} 기준 ${somoimTime}`
+    }
+}
 
 function extractMeetingMembers(htmlString) {
     const members = [];
@@ -95,7 +139,7 @@ function extractMeetingInfo(htmlString) {
         // 5. 추출한 정보를 JSON 객체로 조합
         results.push({
             "이름": name,
-            "모임시각": `${new Date().toLocaleDateString()} 기준 ` + time,
+            "모임시각": transformTime(time),
             "모임장소": location,
             "최대정원": totalCapacity,
             "참여자수": currentParticipants,
