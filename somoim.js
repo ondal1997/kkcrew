@@ -85,6 +85,8 @@ const getSomoimSnapshot = async () => {
         ee,
         emm,
         emap,
+        loc,
+        ipe,
 
         en2,
         e_d2,
@@ -93,7 +95,9 @@ const getSomoimSnapshot = async () => {
         ee2,
         emm2,
         emap2,
-
+        loc2,
+        ipe2,
+        
         en3,
         e_d3,
         e_t3,
@@ -101,6 +105,8 @@ const getSomoimSnapshot = async () => {
         ee3,
         emm3,
         emap3,
+        loc3,
+        ipe3,
 
         en4,
         e_d4,
@@ -109,6 +115,8 @@ const getSomoimSnapshot = async () => {
         ee4,
         emm4,
         emap4,
+        loc4,
+        ipe4,
     } = responseData.g;
 
     const getDate = (date, time) => {
@@ -131,6 +139,11 @@ const getSomoimSnapshot = async () => {
             모임시각: getDate(e_d, e_t),
             모임장소: el,
             모임비용: ee,
+            // 이게뭔가싶다: {
+            //     loc,
+            //     emap,
+            //     ipe,
+            // }
         },
         {
             식별자: getId(e_d2, e_t2),
@@ -141,6 +154,11 @@ const getSomoimSnapshot = async () => {
             모임시각: getDate(e_d2, e_t2),
             모임장소: el2,
             모임비용: ee2,
+            // 이게뭔가싶다: {
+            //     loc2,
+            //     emap2,
+            //     ipe2,
+            // }
         },
         {
             식별자: getId(e_d3, e_t3),
@@ -151,6 +169,11 @@ const getSomoimSnapshot = async () => {
             모임시각: getDate(e_d3, e_t3),
             모임장소: el3,
             모임비용: ee3,
+            // 이게뭔가싶다: {
+            //     loc3,
+            //     emap3,
+            //     ipe3,
+            // }
         },
         {
             식별자: getId(e_d4, e_t4),
@@ -161,6 +184,11 @@ const getSomoimSnapshot = async () => {
             모임시각: getDate(e_d4, e_t4),
             모임장소: el4,
             모임비용: ee4,
+            // 이게뭔가싶다: {
+            //     loc4,
+            //     emap4,
+            //     ipe4,
+            // }
         },
     ];
 
