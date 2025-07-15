@@ -31,7 +31,7 @@ async function readData() {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: range,
-    });
+    }, { timeout: 1000 });
 
     const rows = response.data.values;
     if (rows && rows.length) {
@@ -66,7 +66,7 @@ async function updateData() {
       range: range,
       valueInputOption: 'USER_ENTERED', // 입력된 값을 그대로 시트에 적용
       resource: { values },
-    });
+    }, { timeout: 1000 });
 
     console.log(`성공적으로 ${response.data.updatedCells}개 셀을 업데이트했습니다.`);
 
@@ -92,7 +92,7 @@ async function appendData() {
       range: range,
       valueInputOption: 'USER_ENTERED',
       resource: { values },
-    });
+    }, { timeout: 1000 });
 
     console.log(`성공적으로 데이터를 추가했습니다. 추가된 위치: ${response.data.updates.updatedRange}`);
 
@@ -114,7 +114,7 @@ async function 스냅샷히스토리시트업데이트(snapshot) {
     range: range,
     valueInputOption: 'USER_ENTERED',
     resource: { values },
-  });
+  }, { timeout: 1000 });
 
   console.log(`성공적으로 데이터를 추가했습니다. 추가된 위치: ${response.data.updates.updatedRange}`);
 }
@@ -125,7 +125,7 @@ async function 구글시트에서사람목록가져오기() {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
     range: range,
-  });
+  }, { timeout: 1000 });
 
   return response.data.values.slice(1).map((row) => {
     return {
@@ -147,7 +147,7 @@ async function 구글시트에서사람목록에추가(사람들) {
     range: range,
     valueInputOption: 'USER_ENTERED',
     resource: { values },
-  });
+  }, { timeout: 1000 });
 
   console.log(`성공적으로 데이터를 추가했습니다. 추가된 위치: ${response.data.updates.updatedRange}`);
 }
@@ -171,7 +171,7 @@ async function 모임시트에서모임목록가져오기() {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
     range: range,
-  });
+  }, { timeout: 1000 });
 
   return response.data.values.slice(1).map((row) => {
     return {
@@ -213,7 +213,7 @@ async function 모임목록덮어씌우기(모임들) {
     range: range,
     valueInputOption: 'USER_ENTERED',
     resource: { values },
-  });
+  }, { timeout: 1000 });
 
   console.log(`성공적으로 데이터를 추가했습니다. 추가된 위치: ${response.data.updatedRange}`);
 }

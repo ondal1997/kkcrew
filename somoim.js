@@ -19,6 +19,12 @@ async function postGroupInfo() {
     // 2. 요청을 보낼 URL
     const url = 'https://sm-members.fcfc-1.com/group_infos/sync_gi/b16c59c2-e099-11ef-94e6-0a81256f700d1.json';
 
+    // 타임아웃 설정 (1초)
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => {
+        abortController.abort();
+    }, 1000);
+
     try {
         // 3. fetch 함수를 사용해 POST 요청을 보냅니다.
         const response = await fetch(url, {
@@ -27,8 +33,12 @@ async function postGroupInfo() {
                 'Content-Type': 'application/json', // 보내는 데이터의 타입
                 'Accept': 'application/json' // 받고자 하는 데이터의 타입
             },
-            body: JSON.stringify(dataToSend) // JavaScript 객체를 JSON 문자열로 변환
+            body: JSON.stringify(dataToSend), // JavaScript 객체를 JSON 문자열로 변환
+            signal: abortController.signal // 타임아웃 시그널 추가
         });
+
+        // 요청이 성공했으므로 타임아웃 취소
+        clearTimeout(timeoutId);
 
         // 4. 서버의 응답 상태를 확인합니다.
         if (!response.ok) {
@@ -42,8 +52,15 @@ async function postGroupInfo() {
         return responseData; // 성공한 데이터를 반환
 
     } catch (error) {
+        // 타임아웃 정리
+        clearTimeout(timeoutId);
+        
         // 7. 요청 중 발생한 에러를 콘솔에 출력합니다.
-        console.error('요청 실패:', error);
+        if (error.name === 'AbortError') {
+            console.error('요청 타임아웃 (1초):', error);
+        } else {
+            console.error('요청 실패:', error);
+        }
         throw error;
     }
 }
