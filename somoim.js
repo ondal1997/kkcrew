@@ -23,7 +23,7 @@ async function postGroupInfo() {
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => {
         abortController.abort();
-    }, 1000);
+    }, 2000);
 
     try {
         // 3. fetch 함수를 사용해 POST 요청을 보냅니다.
