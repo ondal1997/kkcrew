@@ -246,7 +246,7 @@ async function 모임시트업데이트(snapshot) {
     };
   });
 
-  const 모임들 = [...기존모임들갱신, ...새로운모임들].sort((a, b) => a.모임시각 - b.모임시각);
+  const 모임들 = [...기존모임들갱신, ...새로운모임들].sort((a, b) => new Date(a.모임시각) - new Date(b.모임시각));
 
   await 모임목록덮어씌우기(모임들);
 }
