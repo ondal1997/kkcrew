@@ -185,6 +185,7 @@ async function 모임시트에서모임목록가져오기() {
       모임시각: row[7],
       모임장소: row[8],
       모임비용: row[9],
+      삭제여부: row[10],
     }
   });
 }
@@ -205,6 +206,7 @@ async function 모임목록덮어씌우기(모임들) {
       모임.모임시각,
       모임.모임장소,
       모임.모임비용,
+      모임.삭제여부,
     ];
   });
 
@@ -234,32 +236,39 @@ async function 모임시트업데이트(snapshot) {
 
   const 기존모임들갱신 = 기존모임들.map((구글시트모임) => {
     const 스냅샷모임 = snapshot.모임들.find((스냅샷모임) => 스냅샷모임.식별자 === 구글시트모임.식별자);
+
+    // 만약 기존모임에 있는데 스냅샷에 없고, 모임시각도 오늘이 지나지 않았다면 삭제된 모임으로 간주한다.
+    // 삭제여부 필드를 추가한다.
     return {
       ...구글시트모임,
       ...스냅샷모임,
+      삭제여부: 구글시트모임.삭제여부 ?? (!스냅샷모임 && 모임시각이오늘이지나지않았는가(구글시트모임)) ? 'Y' : undefined,
     };
   });
 
-  const 모임들 = [...기존모임들갱신, ...새로운모임들];
+  const 모임들 = [...기존모임들갱신, ...새로운모임들].sort((a, b) => a.모임시각 - b.모임시각);
 
   await 모임목록덮어씌우기(모임들);
 }
 
 const now = new Date();
 
+const 모임시각이오늘이지나지않았는가 = (모임) => {
+  const aDate = new Date(모임.모임시각);
+  const bDate = new Date(now);
+  aDate.setHours(aDate.getHours() + 9);
+  bDate.setHours(bDate.getHours() + 9);
+
+  const aa = `${aDate.getUTCFullYear()}${aDate.getUTCMonth().toString().padStart(2, '0')}${aDate.getUTCDate().toString().padStart(2, '0')}2359`; // 1분 이상의 불일치가 발생하지 않을 것이라 믿고 23:59으로 설정
+  const bb = `${bDate.getUTCFullYear()}${bDate.getUTCMonth().toString().padStart(2, '0')}${bDate.getUTCDate().toString().padStart(2, '0')}${bDate.getUTCHours().toString().padStart(2, '0')}${bDate.getUTCMinutes().toString().padStart(2, '0')}`;
+
+  return aa > bb;
+}
+
+
 const integrateSnapshotToGoogleSheet = async (snapshot) => {
   await 스냅샷히스토리시트업데이트(snapshot);
-  snapshot.모임들 = snapshot.모임들.sort((a, b) => a.모임시각 - b.모임시각).filter((모임) => {
-    const a = new Date(모임.모임시각);
-    const b = new Date(now);
-    a.setHours(a.getHours() + 9);
-    b.setHours(b.getHours() + 9);
-
-    const aa = `${a.getUTCFullYear()}${a.getUTCMonth().toString().padStart(2, '0')}${a.getUTCDate().toString().padStart(2, '0')}2359`; // 1분 이상의 불일치가 발생하지 않을 것이라 믿고 23:59으로 설정
-    const bb = `${b.getUTCFullYear()}${b.getUTCMonth().toString().padStart(2, '0')}${b.getUTCDate().toString().padStart(2, '0')}${b.getUTCHours().toString().padStart(2, '0')}${b.getUTCMinutes().toString().padStart(2, '0')}`;
-
-    return aa > bb;
-  });
+  snapshot.모임들 = snapshot.모임들.filter(모임시각이오늘이지나지않았는가);
   await 사람시트업데이트(snapshot);
   await 모임시트업데이트(snapshot);
 }
