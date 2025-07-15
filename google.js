@@ -268,7 +268,10 @@ const 모임시각이오늘이지나지않았는가 = (모임) => {
 
 const integrateSnapshotToGoogleSheet = async (snapshot) => {
   await 스냅샷히스토리시트업데이트(snapshot);
+
+  // 소모임 API 특징: 스냅샷 가져올때 최근 진행된 4개의 벙이 가져와진다. 종료여부랑 관계없이 가져오기 때문에 종료여부를 내가 추가해서 처리한다.
   snapshot.모임들 = snapshot.모임들.filter(모임시각이오늘이지나지않았는가);
+
   await 사람시트업데이트(snapshot);
   await 모임시트업데이트(snapshot);
 }
