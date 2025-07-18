@@ -285,7 +285,7 @@ const integrateSnapshotToGoogleSheet = async (snapshot) => {
 
   // 소모임 API 특징: 스냅샷 가져올때 최근 진행된 4개의 벙이 가져와진다. 종료여부랑 관계없이 가져오기 때문에 종료여부를 내가 추가해서 처리한다.
   snapshot.모임들 = snapshot.모임들
-    .filter(모임 => 모임.모임시각 !== null) // 간혹 벙을 삭제하면 모임시각이 null로 설정되는 경우가 있어서 필터링한다.
+    .filter(모임 => !isNaN(모임.모임시각.getTime())) // 간혹 벙을 삭제하면 모임시각이 Invalid Date로 설정되는 경우가 있어서 필터링한다.
     .filter(모임시각이오늘이지나지않았는가);
 
   await 사람시트업데이트(snapshot);
